@@ -12,23 +12,35 @@ def get_dashboard(board_uri):
     r = send_grafana_get(grafana_url + "/api/dashboards/{0}".format(board_uri))
     status_code = r.status_code
     content = r.content
-    print "query dashboard:{0}, status:{1}".format(board_uri, status_code)
+    print "Attempting to export {0}.".format(board_uri)
+    if status_code == 200:
+        print "Success."
+    else:
+        print "Failed. Message: {0} Status: {1}".format(r.content, status_code)
     return (status_code, content)
 
 
 def delete_dashboard(board_uri):
     r = requests.delete(grafana_url + "/api/dashboards/db/{0}".format(board_uri), headers=http_post_headers)
     status_code = r.status_code
-    print "status: {0}".format(status_code)
-    print "msg: {0}".format(r.content)
+    if status_code != 404:
+        print "Dashboard \"{0}\" already exists. Attempting to delete it.".format(board_uri)
+        if status_code != 200:
+            print "Failed. Message: {0} Status: {1}".format(r.content, status_code) 
+        else:
+            print "Success."
+    if status_code == 404 or status_code == 200:
+        print "Now attempting to create {0}.".format(board_uri)
     return int(status_code)
 
 
 def create_dashboard(payload):
     r = send_grafana_post(grafana_url + '/api/dashboards/db', payload)
     status_code = r.status_code
-    print "status: {0}".format(status_code)
-    print "msg: {0}".format(r.content)
+    if status_code == 200:
+        print "Success."
+    else:
+        print "Failed. Message: {0} Status: {1}".format(r.content, status_code)
     return int(status_code)
 
 
@@ -41,8 +53,10 @@ def search_datasource():
 def create_datasource(payload):
     r = send_grafana_post(grafana_url + '/api/datasources', payload)
     status_code = r.status_code
-    print "status: {0}".format(status_code)
-    print "msg: {0}".format(r.content)
+    if status_code == 200:
+        print "Success."
+    else:
+        print "Failed. Message: {0} Status: {1}".format(r.content, status_code)
     return int(status_code)
 
 

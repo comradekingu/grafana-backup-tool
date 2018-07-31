@@ -62,3 +62,14 @@ You can see how to get token from here: [Grafana Web page](http://docs.grafana.o
 		* two folders contain dashboard files and datasource files: **/tmp/dashboards/$current_time**, **/tmp/datasources/$current_time**
 	* ex：**sh backup_grafana.sh**
 	* result：**/tmp/dashboads.tar.gz**, **/tmp/datasourcess.tar.gz**, **/tmp/dashboards/2016-10-10_12:00:00**, **/tmp/datasources/2016-10-10_12:00:00**
+
+## Changes from original 
+* Primary change here is that the output was modified to be more concise and readable. The original script attempted to delete every dashboard before creating it, regardless of it existed or not, resulting in a lot of unnecessary clutter from 404: Graph not found messages. The modified script still attempts to delete, but will now only output a message if the graph did in fact exist before the delete attempt.
+
+* Output is now clearer in general and with less clutter.
+
+## Notes
+
+* The role of the API key you specify in the grafanaSettings file NEEDS to be "Admin" or the scripts will not have the correct permissions to work properly. Backing up dashboards may not work correctly and backing up datasources will not work at all.
+
+* If you have graphs whose datasource is Cloudwatch, the scripts will still back up and restore these correctly, but you MUST run the server in question on a machine that has been given appropriate Cloudwatch permissions or they will not display properly. All other data sources appear to work correctly regardless of machine.
