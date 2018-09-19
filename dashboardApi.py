@@ -3,9 +3,14 @@ from grafanaSettings import *
 
 
 def search_dashboard():
-    print "search dashboard in grafana:"
+    print "searching dashboards in grafana..."
     r = send_grafana_get(grafana_url + '/api/search/')
-    return r.content
+    try: 
+      if r.content['message'] == "Invalid Basic Auth Header":
+        print(r.content['message'])
+        raise SystemExit
+    except TypeError:
+      return r.content
 
 
 def get_dashboard(board_uri):
